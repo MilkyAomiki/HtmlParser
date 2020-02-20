@@ -21,11 +21,27 @@ namespace TestUi
 			bool IsRead;
 			Console.WriteLine("Parse File?");
 			var input = Console.ReadLine();
-
+			string visibleText = null;
 			IsRead = (input == "yes"||input == "ok" )? true : false;
 			if (IsRead)
 			{
-				Console.WriteLine(tools.GetVisibleText(str));
+				visibleText = tools.GetVisibleText(str);
+				Console.WriteLine(visibleText);
+			}
+			Console.WriteLine("Split To Words?");
+			var input2 = Console.ReadLine();
+
+			IsRead = (input2 == "yes" || input2 == "ok") ? true : false;
+			string[] words;
+			if (IsRead)
+			{
+				
+				words = tools.SplitToWords(visibleText);
+				foreach (var i in words)
+				{
+					Console.WriteLine(i);
+				}
+
 			}
 			Console.Read();
 		}

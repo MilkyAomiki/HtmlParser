@@ -9,12 +9,6 @@ using System.Security.Policy;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using AngleSharp;
-using AngleSharp.Common;
-using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
-using AngleSharp.Html.Parser;
 using Syroot.Windows.IO;
 
 namespace Model_Parser
@@ -27,7 +21,7 @@ namespace Model_Parser
 		string GetString (string filePath);
 		string GetVisibleText(string html);
 		string[] SplitToWords(string text);
-		int CountUpWord(string text, string word);
+		int CountUpWord(string[] text, string word);
 
 	}
 
@@ -47,6 +41,7 @@ namespace Model_Parser
 	    {
 		    var builder = new UriBuilder(uri);
 			var localUri = builder.Uri;
+
 			using (var client = new WebClient())
 		    {
 			    if (Directory.Exists(DefaultFolder))
@@ -64,7 +59,6 @@ namespace Model_Parser
 						}
 					}
 					
-
 					client.DownloadFile(localUri, _htmlFilePath);
 				}
 		    }
@@ -118,31 +112,32 @@ namespace Model_Parser
 			{
 				content = "File doesn't exist";
 			}
-			
-
 			return content;
 		}
 
 		public string GetVisibleText(string html)
 		{
+
 			string visibleText = null;
 
 			var withoutTitle =   Regex.Replace(html, @"<title[\W\w\S\s]*?>[\W\w\S\s]*?</title>", " ");
 			var withoutScripts = Regex.Replace(withoutTitle, @"<script[\W\w\S\s]*?>[\W\w\S\s]*?</script>", " ");
 			var withoutTags =    Regex.Replace(withoutScripts, @"<[\W\w\S\s]*?>", " ");
+			var withoutSymbols = Regex.Replace(withoutTags, @"&[\W\w\S]*?;", " ");
+			var withoutNewLine = Regex.Replace(withoutSymbols, @"\n", " ");
 
-			for (int i = 0; i < withoutTags.Length; i++)
+			for (int i = 0; i < withoutNewLine.Length; i++)
 			{
-				if (i+1 >= withoutTags.Length)
+				if (i+1 >= withoutNewLine.Length)
 				{
 					break;
 				}
-				if (Char.IsWhiteSpace(withoutTags[i + 1]) && Char.IsWhiteSpace(withoutTags[i]))
+				if (Char.IsWhiteSpace(withoutNewLine[i + 1]) && Char.IsWhiteSpace(withoutNewLine[i]))
 				{
 					continue;
 				}
 
-				visibleText += withoutTags[i];
+				visibleText += withoutNewLine[i];
 			}
 
 			return visibleText;
@@ -150,12 +145,18 @@ namespace Model_Parser
 
 	    public string[] SplitToWords(string text)
 	    {
-		    throw new NotImplementedException();
+			string[] patterns = { " ", ",", ".", "", ")", "(", "\"", ":", ";", "?", "]", "["};
+			var words = Regex.Split(text, "[ ,\\.!?:;\\]\\[\\)\\(\\n\\r\\t\"«»]+");
+
+			//var withoutCharacters = words.Except(patterns).ToArray();
+
+		    return words;
 	    }
 
-	    public int CountUpWord(string text, string word)
+	    public int CountUpWord(string[] text, string word)
 	    {
-		    throw new NotImplementedException();
+		    var matches = text.Where(x => x == word);
+		    return matches.Count();
 	    }
 
 	    private void DeleteDefaultDirectory()
