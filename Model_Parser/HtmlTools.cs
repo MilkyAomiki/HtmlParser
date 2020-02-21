@@ -35,7 +35,11 @@ namespace Model_Parser
 		private string CustomFolder;
 		public string CustomDirectory => CustomFolder + "\\HtmlDocs";
 
-		private string _htmlFilePath;
+        private string _htmlFilePath;
+        public string HtmlFilePath { get => _htmlFilePath; private set => _htmlFilePath = value; }
+
+       
+
 
 		public void DownloadHtml(string uri)
 	    {
@@ -47,19 +51,19 @@ namespace Model_Parser
 			    if (Directory.Exists(DefaultFolder))
 			    {
 				    Directory.CreateDirectory(DefaultDirectory);
-				    _htmlFilePath = DefaultDirectory + $"\\({localUri.Host}).html";
+                    HtmlFilePath = DefaultDirectory + $"\\({localUri.Host}).html";
 				    
-					if (File.Exists(_htmlFilePath))
+					if (File.Exists(HtmlFilePath))
 				    {
 						int cloneId = 0;
-						while (File.Exists(_htmlFilePath))
+						while (File.Exists(HtmlFilePath))
 						{
 							cloneId++;
-							_htmlFilePath = DefaultDirectory + $"\\({localUri.Host})({cloneId}).html";
+                            HtmlFilePath = DefaultDirectory + $"\\({localUri.Host})({cloneId}).html";
 						}
 					}
 					
-					client.DownloadFile(localUri, _htmlFilePath);
+					client.DownloadFile(localUri, HtmlFilePath);
 				}
 		    }
 	    }
@@ -74,9 +78,9 @@ namespace Model_Parser
 					
 					CustomFolder = folderPath;
 					Directory.CreateDirectory(CustomDirectory);
-					_htmlFilePath = CustomDirectory + $"\\({localUri.Host}).html";
+                    HtmlFilePath = CustomDirectory + $"\\({localUri.Host}).html";
 
-					client.DownloadFile(localUri, _htmlFilePath);
+					client.DownloadFile(localUri, HtmlFilePath);
 				}
 				else
 				{
@@ -88,9 +92,9 @@ namespace Model_Parser
 		public string GetString()
 		{
 			string content;
-			if (File.Exists(_htmlFilePath))
+			if (File.Exists(HtmlFilePath))
 			{
-				content = File.ReadAllText(_htmlFilePath);
+				content = File.ReadAllText(HtmlFilePath);
 			}
 			else
 			{

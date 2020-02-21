@@ -10,23 +10,31 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace UI
 {
 	/// <summary>
-	/// Логика взаимодействия для Parser_Main.xaml
+	/// Логика взаимодействия для MainWindow.xaml
 	/// </summary>
-	public partial class Parser_Main : Window
+	public partial class MainWindow : Window
 	{
-		public Parser_Main()
+        public Action btnToParsePage_Click;
+		public MainWindow()
 		{
 			InitializeComponent();
+            
 		}
 
-		private void btn_loadHtml_Click(object sender, RoutedEventArgs e)
+		private void btn_toParsePage_Click(object sender, RoutedEventArgs e)
 		{
+            btnToParsePage_Click.Invoke();
+		}
 
+		private void btn_Exit_Click(object sender, RoutedEventArgs e)
+		{
+			App.Current.Shutdown();
 		}
 	}
 }
