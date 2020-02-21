@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 	<Grid>
-		<Button x:Name="btn_toParsePage" Content="Работа сo страницами" HorizontalAlignment="Left" Margin="320,109,0,0" VerticalAlignment="Top" Width="138" Height="37"/>
+		<Button x:Name="btn_toParsePage" Content="Работа сo страницами" HorizontalAlignment="Left" Margin="320,109,0,0" VerticalAlignment="Top" Width="138" Height="37" Click="btn_toParsePage_Click"/>
 		<Button x:Name="btn_Settings" Content="Настройки" HorizontalAlignment="Left" Margin="320,195,0,0" VerticalAlignment="Top" Width="138" Height="36"/>
-		<Button x:Name="btn_Exit" Content="Выход" HorizontalAlignment="Left" Margin="320,285,0,0" VerticalAlignment="Top" Width="138" Height="36"/>
+		<Button x:Name="btn_Exit" Content="Выход" HorizontalAlignment="Left" Margin="320,285,0,0" VerticalAlignment="Top" Width="138" Height="36" Click="btn_Exit_Click"/>
 
 	</Grid>
 </Window>

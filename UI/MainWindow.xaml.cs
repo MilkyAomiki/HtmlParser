@@ -24,5 +24,18 @@ namespace UI
 		{
 			InitializeComponent();
 		}
+
+		private void btn_toParsePage_Click(object sender, RoutedEventArgs e)
+		{
+			Parser_Main parserWindow = new Parser_Main();
+			this.Hide();
+			parserWindow.RenderTransformOrigin = this.RenderTransformOrigin;
+			parserWindow.Show();
+		}
+
+		private void btn_Exit_Click(object sender, RoutedEventArgs e)
+		{
+			App.Current.Shutdown();
+		}
 	}
 }
