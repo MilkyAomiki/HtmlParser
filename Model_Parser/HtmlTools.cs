@@ -13,24 +13,13 @@ using Syroot.Windows.IO;
 
 namespace Model_Parser
 {
-	public interface IHtmlTools
-	{
-		void DownloadHtml(string uri);
-		void DownloadHtml(string uri, string folderPath);
-		string GetString();
-		string GetString (string filePath);
-		string GetVisibleText(string html);
-		string[] SplitToWords(string text);
-		int CountUpWord(string[] text, string word);
-
-	}
 
     public class HtmlTools: IHtmlTools
     {
 		readonly KnownFolder _folder = new KnownFolder(KnownFolderType.Downloads);
 
 		private string DefaultFolder => _folder.Path;
-		public string DefaultDirectory => _folder.Path + "\\HtmlDocs";
+		public string DefaultDirectory => DefaultFolder + "\\HtmlDocs";
 
 		private string CustomFolder;
 		public string CustomDirectory => CustomFolder + "\\HtmlDocs";
@@ -124,9 +113,10 @@ namespace Model_Parser
 
 			string visibleText = null;
 
-			var withoutTitle =   Regex.Replace(html, @"<title[\W\w\S\s]*?>[\W\w\S\s]*?</title>", " ");
+			var withoutTitle   = Regex.Replace(html, @"<title[\W\w\S\s]*?>[\W\w\S\s]*?</title>", " ");
 			var withoutScripts = Regex.Replace(withoutTitle, @"<script[\W\w\S\s]*?>[\W\w\S\s]*?</script>", " ");
-			var withoutTags =    Regex.Replace(withoutScripts, @"<[\W\w\S\s]*?>", " ");
+            var withoutStyles  = Regex.Replace(withoutScripts, @"<style[\W\w\S\s]*?>[\W\w\S\s]*?</style>", " ");
+            var withoutTags    = Regex.Replace(withoutStyles, @"<[\W\w\S\s]*?>", " ");
 			var withoutSymbols = Regex.Replace(withoutTags, @"&[\W\w\S]*?;", " ");
 			var withoutNewLine = Regex.Replace(withoutSymbols, @"\n", " ");
 
@@ -149,10 +139,8 @@ namespace Model_Parser
 
 	    public string[] SplitToWords(string text)
 	    {
-			string[] patterns = { " ", ",", ".", "", ")", "(", "\"", ":", ";", "?", "]", "["};
+			//string[] patterns = {" ", ",", ".", "", ")", "(", "\"", ":", ";", "?", "]", "["};
 			var words = Regex.Split(text, "[ ,\\.!?:;\\]\\[\\)\\(\\n\\r\\t\"«»]+");
-
-			//var withoutCharacters = words.Except(patterns).ToArray();
 
 		    return words;
 	    }

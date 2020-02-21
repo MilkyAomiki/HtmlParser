@@ -16,16 +16,21 @@ namespace UI
 	{
         private MainWindow w_main = new MainWindow();
         private Parser_Main w_parser = new Parser_Main();
-        private HtmlTools htmlTools = new HtmlTools();
+        private IHtmlTools htmlTools = new HtmlTools();
+
         public App()
         {
             w_main.Show();
             w_main.btnToParsePage_Click += OpenParseWindow;
 
-            w_parser.loadHtmlClick += LoadHtml;
-            w_parser.openExtractPage += ShowLastFilePath;
-            w_parser.showTextFromHtml_Click += ShowTextFromHtml;
-            
+            w_parser.DefaultDirectory         = htmlTools.DefaultDirectory;
+            w_parser.CustomDirectory          = htmlTools.CustomDirectory;
+
+            w_parser.LoadHtmlClick           += LoadHtml;
+            w_parser.OpenExtractPage         += ShowLastFilePath;
+            w_parser.ShowTextFromHtml_Click  += ShowTextFromHtml;
+            w_parser.SplitToWords            += SplitToWords;
+            w_parser.CountUpWord             += CountUpWords;
         }
 
         private void OpenParseWindow()
@@ -44,10 +49,18 @@ namespace UI
         {
             return htmlTools.HtmlFilePath;
         }
-        private string ShowTextFromHtml()
+        private string ShowTextFromHtml(string path)
         {
-            string html = htmlTools.GetString();
+            string html = htmlTools.GetString(path);
             return htmlTools.GetVisibleText(html);
+        }
+        private string[] SplitToWords(string text)
+        {
+            return htmlTools.SplitToWords(text);
+        }
+        private int CountUpWords(string[] words,string word)
+        {
+            return htmlTools.CountUpWord(words, word);
         }
     }
 }
