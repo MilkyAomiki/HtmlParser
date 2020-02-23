@@ -5,11 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
-        Title="Parser" Height="433.2" Width="355.2" ResizeMode="NoResize">
-    <Grid>
-        <Button x:Name="btn_toParsePage" Content="Работа сo страницами" HorizontalAlignment="Left" Margin="110,91,0,0" VerticalAlignment="Top" Width="138" Height="37" Click="btn_toParsePage_Click"/>
-        <Button x:Name="btn_Settings" Content="Настройки" HorizontalAlignment="Left" Margin="110,177,0,0" VerticalAlignment="Top" Width="138" Height="36"/>
-        <Button x:Name="btn_Exit" Content="Выход" HorizontalAlignment="Left" Margin="110,267,0,0" VerticalAlignment="Top" Width="138" Height="36" Click="btn_Exit_Click"/>
+        Title="Parser" Height="407.2" Width="355.2" ResizeMode="NoResize" Icon="baseline_bubble_chart_black_36dp.png" WindowStartupLocation="CenterScreen">
+	<Grid Background="{x:Null}">
+		<TabControl x:Name="tabControl" IsSynchronizedWithCurrentItem="True" BorderBrush="White" Background="{x:Null}" UseLayoutRounding="False">
+			<TabItem x:Name="tabItem_main" Header="TabItem" Visibility="Collapsed">
+				<Grid Background="White">
+					<Button x:Name="btn_toParsePage" Content="Работа сo страницами" HorizontalAlignment="Left" Margin="105,60,0,0" VerticalAlignment="Top" Width="141" Height="38" Click="Btn_toParsePage_Click"/>
+					<Button x:Name="btn_Settings" Content="Настройки" HorizontalAlignment="Left" Margin="105,150,0,0" VerticalAlignment="Top" Width="141" Height="38" Click="Btn_settings_Click"/>
+					<Button x:Name="btn_Exit" Content="Выход" HorizontalAlignment="Left" Margin="105,245,0,0" VerticalAlignment="Top" Width="141" Height="37" Click="Btn_Exit_Click"/>
+				</Grid>
+			</TabItem>
+			<TabItem x:Name="tabItem_settings" Header="Settings" BorderBrush="{x:Null}" Visibility="Collapsed">
+				<TabItem.Background>
+					<LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+						<GradientStop Color="#FFF0F0F0" Offset="0"/>
+						<GradientStop Color="White" Offset="1"/>
+					</LinearGradientBrush>
+				</TabItem.Background>
+				<Grid Background="{x:Null}">
+					<Button x:Name="btn_exitSettings" Content="Ok" HorizontalAlignment="Left" Margin="237,310,0,0" VerticalAlignment="Top" Width="76" Click="Btn_exitSettings_Click"/>
+					<Button x:Name="btn_choosePath" Content="Выбрать" Margin="237,44,0,0" Height="21" VerticalAlignment="Top" HorizontalAlignment="Left" Width="70" Click="btn_choosePath_Click"/>
+					<TextBox x:Name="txtBx_Path" Text="Path" Margin="10,42,0,0" VerticalContentAlignment="Center" Height="23" VerticalAlignment="Top" HorizontalAlignment="Left" Width="211" VerticalScrollBarVisibility="Disabled" MaxLines="1"/>
+					<Label Content="Папка для сохранения страниц:" HorizontalAlignment="Left" Margin="10,16,0,0" VerticalAlignment="Top" Width="211"/>
+				</Grid>
+			</TabItem>
+		</TabControl>
 
-    </Grid>
+	</Grid>
 </Window>

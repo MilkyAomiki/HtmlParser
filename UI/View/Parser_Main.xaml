@@ -5,55 +5,58 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UI"
         mc:Ignorable="d"
-        Title="Parser" Height="450" Width="748.4" ResizeMode="NoResize" WindowStartupLocation="CenterOwner">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="347*"/>
-            <ColumnDefinition Width="396*"/>
-        </Grid.ColumnDefinitions>
-        <TabControl x:Name="Parser_TabControl" Grid.ColumnSpan="2" Margin="0,0,0.4,0">
-            <TabItem x:Name="item_load" Header="Загрузить">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="105*"/>
-                        <ColumnDefinition Width="632*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="btn_loadHtml" Content="Загрузить" HorizontalAlignment="Left" Margin="324.2,158,0,0" VerticalAlignment="Top" Width="96" Click="Btn_loadHtml_Click" Grid.Column="1" Height="24" IsDefault="True"/>
-                    <Button x:Name="btn_goToExtratPage" Content="Извлечь Текст" Margin="0,0,29.8,22" Click="Btn_goToExtractPage_Click" Grid.Column="1" HorizontalAlignment="Right" Width="110" Height="25" VerticalAlignment="Bottom"/>
-                    <TextBox x:Name="txtBx_html" Height="24" Margin="41.2,158,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Left" Width="262" MaxLines="1"/>
-                    <Label Content="Адрес Веб-страницы:" Grid.Column="1" HorizontalAlignment="Left" Margin="41.2,132,0,0" VerticalAlignment="Top"/>
-                    <GroupBox Header="Загрузить новый файл" HorizontalAlignment="Left" Height="392" VerticalAlignment="Top" Width="727" Grid.ColumnSpan="2"/>
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="item_extractText" Header="Извлечь текст" IsSelected="True" Margin="-1.6,-2,1.6,0">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="49*"/>
-                        <ColumnDefinition Width="171*"/>
-                        <ColumnDefinition Width="517*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="btn_goToStats" Content=" Отобразить стастику                             " Margin="0,0,9.8,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Btn_goToStat_Click" Grid.Column="2" Height="29" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="125"/>
-                    <Button x:Name="btn_extractVisibleText" Content="Извлечь" HorizontalAlignment="Left" Margin="274.8,36,0,0" VerticalAlignment="Top" Width="84" Grid.Column="2" Height="23" Click="Btn_extractVisibleText_Click" IsDefault="True"/>
-                    <TextBox x:Name="txtBx_pathToFile" Height="22" Margin="0,37,278.8,0" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.ColumnSpan="3" MaxHeight="23" MaxLines="1" ScrollViewer.CanContentScroll="True" HorizontalAlignment="Right" Width="437"/>
-                    <Label Content="Путь к файлу:" HorizontalAlignment="Right" Margin="0,11,48.2,0" VerticalAlignment="Top" Width="151" Grid.ColumnSpan="2"/>
-                    <ScrollViewer x:Name="___Без_имени_" Margin="0,65,-0.2,54" Grid.ColumnSpan="3">
-                        <TextBox x:Name="lbl_htmlVisibleText" TextWrapping="Wrap" Background="{x:Null}" AutoWordSelection="True" IsReadOnly="True" IsUndoEnabled="False"/>
-                    </ScrollViewer>
-                    <Button x:Name="btn_openFileExplorer" Content="..." Grid.Column="2" Margin="0,37,244.8,0" Background="White" BorderBrush="#FF9F9F9F" Padding="1,1,1,6" Height="22" VerticalAlignment="Top" HorizontalAlignment="Right" Width="34" Click="Btn_openFileExplorer_Click"/>
-                </Grid>
-            </TabItem>
-            <TabItem x:Name="item_statistic" Header="Статистика">
-                <Grid Background="#FFE5E5E5">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="255*"/>
-                        <ColumnDefinition Width="53*"/>
-                    </Grid.ColumnDefinitions>
-                    <ScrollViewer HorizontalAlignment="Left" Height="392" Margin="0,0,-9.2,0" VerticalAlignment="Top" Width="746" Grid.ColumnSpan="2">
-                        <Label x:Name="lbl_wordsStats"/>
-                    </ScrollViewer>
-                </Grid>
-            </TabItem>
-        </TabControl>
+        Title="Parser" Height="450" Width="760.4" ResizeMode="NoResize" WindowStartupLocation="CenterOwner" Icon="baseline_bubble_chart_black_36dp.png">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="347*"/>
+			<ColumnDefinition Width="396*"/>
+		</Grid.ColumnDefinitions>
+		<TabControl x:Name="Parser_TabControl" Grid.ColumnSpan="2" Margin="0,0,0.4,0">
+			<TabItem x:Name="item_load" Header="Загрузить">
+				<Grid Background="White">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="105*"/>
+						<ColumnDefinition Width="632*"/>
+					</Grid.ColumnDefinitions>
+					<Button x:Name="btn_loadHtml" Content="Загрузить" HorizontalAlignment="Left" Margin="324.2,158,0,0" VerticalAlignment="Top" Width="96" Click="Btn_loadHtml_Click" Grid.Column="1" Height="24" IsDefault="True"/>
+					<Button x:Name="btn_goToExtratPage" Content="Извлечь Текст" Margin="0,0,29.8,22" Click="Btn_goToExtractPage_Click" Grid.Column="1" HorizontalAlignment="Right" Width="110" Height="25" VerticalAlignment="Bottom"/>
+					<TextBox x:Name="txtBx_html" Height="24" Margin="41.2,158,0,0" VerticalAlignment="Top" VerticalContentAlignment="Center" Grid.Column="1" HorizontalAlignment="Left" Width="262" MaxLines="1"/>
+					<Label Content="Адрес Веб-страницы:" Grid.Column="1" HorizontalAlignment="Left" Margin="41.2,132,0,0" VerticalAlignment="Top"/>
+					<GroupBox Header="Загрузить новый файл" HorizontalAlignment="Left" Height="392" VerticalAlignment="Top" Width="727" Grid.ColumnSpan="2">
+						<ProgressBar x:Name="progressBar_loadHtml" HorizontalAlignment="Left" Height="10" Margin="142,171,0,0" VerticalAlignment="Top" Width="100" Foreground="#FF5D63E6" IsEnabled="False" SmallChange="1" BorderBrush="White" Background="White"/>
+					</GroupBox>
+				</Grid>
+			</TabItem>
+			<TabItem x:Name="item_extractText" Header="Извлечь текст" IsSelected="True" Margin="-1.6,-2,1.6,0">
+				<Grid Background="White">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="49*"/>
+						<ColumnDefinition Width="171*"/>
+						<ColumnDefinition Width="517*"/>
+					</Grid.ColumnDefinitions>
+					<Button x:Name="btn_goToStats" Content=" Отобразить стастику                             " Margin="0,0,9.8,10" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Click="Btn_goToStat_Click" Grid.Column="2" Height="29" VerticalAlignment="Bottom" HorizontalAlignment="Right" Width="125"/>
+					<Button x:Name="btn_extractVisibleText" Content="Извлечь" HorizontalAlignment="Left" Margin="274.8,36,0,0" VerticalAlignment="Top" Width="84" Grid.Column="2" Height="23" Click="Btn_extractVisibleText_Click" IsDefault="True"/>
+					<TextBox x:Name="txtBx_pathToFile" Height="22" Margin="0,37,278.8,0" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Grid.ColumnSpan="3" MaxHeight="23" MaxLines="1" ScrollViewer.CanContentScroll="True" HorizontalAlignment="Right" Width="437"/>
+					<Label Content="Путь к файлу:" HorizontalAlignment="Right" Margin="0,11,48.2,0" VerticalAlignment="Top" Width="151" Grid.ColumnSpan="2"/>
+					<ScrollViewer x:Name="___Без_имени_" Margin="0,65,-0.2,54" Grid.ColumnSpan="3">
+						<TextBox x:Name="lbl_htmlVisibleText" TextWrapping="Wrap" Background="{x:Null}" AutoWordSelection="True" IsReadOnly="True" IsUndoEnabled="False"/>
+					</ScrollViewer>
+					<Button x:Name="btn_openFileExplorer" Content="..." Grid.Column="2" Margin="0,37,244.8,0" Background="White" BorderBrush="#FF9F9F9F" Padding="1,1,1,6" Height="22" VerticalAlignment="Top" HorizontalAlignment="Right" Width="34" Click="Btn_openFileExplorer_Click"/>
+					<ProgressBar x:Name="progressBar_extract" Grid.Column="2" HorizontalAlignment="Left" Height="10" Margin="374.448,49,0,0" VerticalAlignment="Top" Width="140" BorderBrush="White" Background="White" Foreground="#FF5D63E6"/>
+				</Grid>
+			</TabItem>
+			<TabItem x:Name="item_statistic" Header="Статистика" Visibility="Collapsed">
+				<Grid Background="White">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="255*"/>
+						<ColumnDefinition Width="53*"/>
+					</Grid.ColumnDefinitions>
+					<ScrollViewer x:Name="scrl_stats" Grid.ColumnSpan="2" Margin="0,0,0,1">
+						<Label x:Name="lbl_wordsStats"/>
+					</ScrollViewer>
+				</Grid>
+			</TabItem>
+		</TabControl>
 
-    </Grid>
+	</Grid>
 </Window>

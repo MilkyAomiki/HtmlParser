@@ -3,7 +3,7 @@
     public interface IHtmlTools
 	{
         string DefaultDirectory { get; }
-        string CustomDirectory { get; }
+        string CustomDirectory { get; set; }
         string HtmlFilePath { get; }
 
         void DownloadHtml(string uri);

@@ -22,39 +22,53 @@ namespace Model_Parser
 		public string DefaultDirectory => DefaultFolder + "\\HtmlDocs";
 
 		private string CustomFolder;
-		public string CustomDirectory => CustomFolder + "\\HtmlDocs";
+		public string CustomDirectory
+		{
+			get => CustomFolder;
+
+			set
+			{
+				CustomFolder = value;
+				if (File.Exists(value))
+				{
+					Directory.CreateDirectory(CustomDirectory);
+				}
+			} 
+		}
 
         private string _htmlFilePath;
         public string HtmlFilePath { get => _htmlFilePath; private set => _htmlFilePath = value; }
 
        
 
-
 		public void DownloadHtml(string uri)
 	    {
+		    
 		    var builder = new UriBuilder(uri);
-			var localUri = builder.Uri;
+		    var localUri = builder.Uri;
 
 			using (var client = new WebClient())
-		    {
-			    if (Directory.Exists(DefaultFolder))
-			    {
-				    Directory.CreateDirectory(DefaultDirectory);
-                    HtmlFilePath = DefaultDirectory + $"\\({localUri.Host}).html";
-				    
-					if (File.Exists(HtmlFilePath))
-				    {
-						int cloneId = 0;
-						while (File.Exists(HtmlFilePath))
-						{
-							cloneId++;
-                            HtmlFilePath = DefaultDirectory + $"\\({localUri.Host})({cloneId}).html";
-						}
-					}
-					
-					client.DownloadFile(localUri, HtmlFilePath);
+			{
+				var directory = Directory.Exists(CustomDirectory) ? CustomDirectory : DefaultDirectory;
+				if (directory == DefaultDirectory)
+				{
+					Directory.CreateDirectory(DefaultDirectory);
 				}
-		    }
+				HtmlFilePath = directory + $"\\({localUri.Host}).html";
+				    
+				if (File.Exists(HtmlFilePath))
+				{
+					int cloneId = 0;
+					while (File.Exists(HtmlFilePath))
+					{
+						cloneId++;
+						HtmlFilePath = directory + $"\\({localUri.Host})({cloneId}).html";
+					}
+				}
+				client.DownloadFile(localUri, HtmlFilePath);
+				
+				
+			}
 	    }
 		public void DownloadHtml(string uri, string folderPath)
 		{
@@ -80,31 +94,13 @@ namespace Model_Parser
 
 		public string GetString()
 		{
-			string content;
-			if (File.Exists(HtmlFilePath))
-			{
-				content = File.ReadAllText(HtmlFilePath);
-			}
-			else
-			{
-				content = "File doesn't exist";
-			}
-
+			var content = File.Exists(HtmlFilePath) ? File.ReadAllText(HtmlFilePath) : "File doesn't exist";
 			return content;
 		}
 
 		public string GetString(string filePath)
 		{
-			string content;
-
-			if (File.Exists(filePath))
-			{
-				content = File.ReadAllText(filePath);
-			}
-			else
-			{
-				content = "File doesn't exist";
-			}
+			var content = File.Exists(filePath) ? File.ReadAllText(filePath) : "File doesn't exist";
 			return content;
 		}
 
@@ -124,6 +120,10 @@ namespace Model_Parser
 			{
 				if (i+1 >= withoutNewLine.Length)
 				{
+					if (!Char.IsWhiteSpace(withoutNewLine[i]))
+					{
+						visibleText += withoutNewLine[i];
+					}
 					break;
 				}
 				if (Char.IsWhiteSpace(withoutNewLine[i + 1]) && Char.IsWhiteSpace(withoutNewLine[i]))
