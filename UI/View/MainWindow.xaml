@@ -10,8 +10,8 @@
 		<TabControl x:Name="tabControl" IsSynchronizedWithCurrentItem="True" BorderBrush="White" Background="{x:Null}" UseLayoutRounding="False">
 			<TabItem x:Name="tabItem_main" Header="TabItem" Visibility="Collapsed">
 				<Grid Background="White">
-					<Button x:Name="btn_toParsePage" Content="Работа сo страницами" HorizontalAlignment="Left" Margin="105,60,0,0" VerticalAlignment="Top" Width="141" Height="38" Click="Btn_toParsePage_Click"/>
-					<Button x:Name="btn_Settings" Content="Настройки" HorizontalAlignment="Left" Margin="105,150,0,0" VerticalAlignment="Top" Width="141" Height="38" Click="Btn_settings_Click"/>
+					<Button x:Name="btn_toParsePage" Content="Работа сo страницами" HorizontalAlignment="Left" Margin="105,95,0,0" VerticalAlignment="Top" Width="141" Height="38" Click="Btn_toParsePage_Click"/>
+					<Button x:Name="btn_Settings" Content="Настройки" HorizontalAlignment="Left" Margin="105,170,0,0" VerticalAlignment="Top" Width="141" Height="38" Click="Btn_settings_Click"/>
 					<Button x:Name="btn_Exit" Content="Выход" HorizontalAlignment="Left" Margin="105,245,0,0" VerticalAlignment="Top" Width="141" Height="37" Click="Btn_Exit_Click"/>
 				</Grid>
 			</TabItem>

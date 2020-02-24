@@ -102,10 +102,19 @@ namespace Parser
 			long mb = kb / 1024;
 			string content;
 			mb = mb == 0 ? 1 : mb;
-		
-			MemoryFailPoint f = new MemoryFailPoint((int)mb);
 
-			content = File.Exists(filePath) ? File.ReadAllText(filePath) : "File doesn't exist";
+			if (!File.Exists(filePath)) throw  new FileNotFoundException();
+			if (new FileInfo(filePath).Extension != ".html") throw new FileFormatException();
+			try
+			{
+				MemoryFailPoint f = new MemoryFailPoint((int)mb);
+			}
+			catch (Exception e)
+			{
+				throw new InsufficientMemoryException();
+			}
+			
+			content = File.ReadAllText(filePath);
 			return content;
 		}
 
@@ -151,10 +160,8 @@ namespace Parser
 
 	    public IEnumerable<CountedWords> CountUpWord(string[] words)
 	    {
-		    string[] pattern = {"|", " ", "", "-", "", "=", "/"};
-		    words = words.Except(pattern).ToArray();
 
-		    var matches = words.Where(a => !String.IsNullOrEmpty(a)).GroupBy(x => x.Trim())
+		    var matches = words.Where(a => !String.IsNullOrEmpty(a)).GroupBy(x => x)
 			    .Select(g => new CountedWords(g.Key, g.Count()));
 			
 		    return matches;

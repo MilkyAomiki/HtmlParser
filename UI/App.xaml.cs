@@ -93,8 +93,30 @@ namespace UI
 
         private string ShowTextFromHtml(string path)
         {
-            string html = htmlTools.GetString(path);
-            return htmlTools.GetVisibleText(html);
+	        string html = null;
+	        string visibleText = null;
+
+	        try
+	        {
+		        html = htmlTools.GetString(path);
+		        visibleText = htmlTools.GetVisibleText(html);
+
+	        }
+	        catch (FileFormatException)
+	        {
+		        visibleText = "Wrong file extension";
+	        }
+	        catch (InsufficientMemoryException)
+	        {
+		        visibleText = "File is too large";
+	        }
+	        catch (FileNotFoundException)
+	        {
+		        visibleText = "File not found";
+
+	        }
+
+	        return visibleText;
         }
 
         private string[] SplitToWords(string text)
