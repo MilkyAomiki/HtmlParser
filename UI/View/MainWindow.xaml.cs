@@ -1,23 +1,30 @@
 ﻿using System;
 using System.IO;
+using System.Security.AccessControl;
 using System.Windows;
 using System.Windows.Forms;
-using  Newtonsoft.Json;
+using Newtonsoft.Json;
+using MessageBox = System.Windows.MessageBox;
 
 namespace UI
 {
 	/// <summary>
-	/// Логика взаимодействия для MainWindow.xaml
+	/// Логика взаимодействия для главного окна MainWindow.xaml
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-        public Action BtnToParsePage_Click;
-        public Func<string> DefaultFolderGet;
-        public Action<string> SetCustomFolder;
-        public Func<string> GetCustomFolder;
-		private string CustomFolder {  set => SetCustomFolder.Invoke(value); get => GetCustomFolder.Invoke(); }
+		#region Events
 
-        private string DefaultFolder => DefaultFolderGet.Invoke();
+		public Action BtnToParsePage_Click;
+		public Func<string> GetDefaultFolder;
+		public Action<string> SetCustomFolder;
+		public Func<string> GetCustomFolder;
+
+		#endregion
+
+		//Значения устанавливаются из App.cs
+		private string CustomFolder { set => SetCustomFolder.Invoke(value); get => GetCustomFolder.Invoke(); }
+		private string DefaultFolder => GetDefaultFolder.Invoke();
 
 		public MainWindow()
 		{
@@ -47,15 +54,37 @@ namespace UI
 			{
 				if (Directory.Exists(txtBx_Path.Text))
 				{
+					//Проверяет возможность записи в выбранную директорию
+					try
+					{
+						using (FileStream fs = new FileStream(txtBx_Path.Text + @"\test.html", FileMode.Create, FileAccess.Write))
+						{
+							fs.WriteByte(0xff);
+						}
+
+						if (File.Exists(txtBx_Path.Text + @"\test.html"))
+						{
+							File.Delete(txtBx_Path.Text + @"\test.html");
+						}
+					}
+					catch (Exception)
+					{
+						MessageBox.Show("Can not access directory", txtBx_Path.Text, MessageBoxButton.OK);
+						return;
+					}
+
 					CustomFolder = txtBx_Path.Text;
+
 					using (StreamWriter file = File.CreateText("settings.json"))
 					{
 						JsonSerializer serializer = new JsonSerializer();
 						serializer.Serialize(file, CustomFolder);
 					}
 				}
-			}else if (txtBx_Path.Text == DefaultFolder && CustomFolder!= null)
+			}
+			else if (txtBx_Path.Text == DefaultFolder && CustomFolder!= null)
 			{
+
 				CustomFolder = null;
 				File.Delete("settings.json");
 

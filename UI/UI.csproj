@@ -71,14 +71,14 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\Parser_Main.xaml">
+    <Page Include="View\ParserMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="View\Parser_Main.xaml.cs">
-      <DependentUpon>Parser_Main.xaml</DependentUpon>
+    <Compile Include="View\ParserMain.xaml.cs">
+      <DependentUpon>ParserMain.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -107,9 +107,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Model_Parser\Model_Parser.csproj">
+    <ProjectReference Include="..\Model_Parser\Parser.csproj">
       <Project>{6df88c81-6b6d-4d1e-b39d-5b84ed195086}</Project>
-      <Name>Model_Parser</Name>
+      <Name>Parser</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

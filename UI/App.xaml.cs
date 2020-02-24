@@ -1,33 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using Model_Parser;
-using  Newtonsoft.Json;
+using Parser;
+using Newtonsoft.Json;
 
 namespace UI
 {
 	/// <summary>
-	/// Логика взаимодействия для App.xaml
+	/// Связывет HtmlTools и View, управляет окнами
 	/// </summary>
 	public partial class App : Application
 	{
         private MainWindow w_main = new MainWindow();
-        private Parser_Main w_parser = new Parser_Main();
+        private ParserMain w_parser = new ParserMain();
         private IHtmlTools htmlTools = new HtmlTools();
 
         public App()
         {
 	        DeserializeSettings();
 
+            #region View Events
+
             w_main.SetCustomFolder      += SetCustomFolder;
             w_main.GetCustomFolder      += () => htmlTools.CustomDirectory;
-            w_main.DefaultFolderGet     += () => htmlTools.DefaultDirectory;
+            w_main.GetDefaultFolder     += () => htmlTools.DefaultDirectory;
             w_main.BtnToParsePage_Click += OpenParseWindowAppear;
             w_main.Show();
 
@@ -39,6 +36,9 @@ namespace UI
             w_parser.ShowTextFromHtml_Click += ShowTextFromHtml;
             w_parser.SplitToWords           += SplitToWords;
             w_parser.CountUpWord            += CountUpWords;
+
+
+            #endregion
         }
 
         private void DeserializeSettings()
@@ -90,19 +90,21 @@ namespace UI
         {
             return htmlTools.HtmlFilePath;
         }
+
         private string ShowTextFromHtml(string path)
         {
-            Thread.Sleep(4000);
             string html = htmlTools.GetString(path);
             return htmlTools.GetVisibleText(html);
         }
+
         private string[] SplitToWords(string text)
         {
             return htmlTools.SplitToWords(text);
         }
-        private int CountUpWords(string[] words,string word)
+
+        private IEnumerable<CountedWords> CountUpWords(string[] words)
         {
-            return htmlTools.CountUpWord(words, word);
+            return htmlTools.CountUpWord(words);
         }
     }
 }

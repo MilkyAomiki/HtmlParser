@@ -1,34 +1,35 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Net;
-using System.Net.Mime;
-using System.Security.Policy;
-using System.Security.Principal;
-using System.Text;
 using System.Text.RegularExpressions;
 using Syroot.Windows.IO;
+using System.Runtime;
 
-namespace Model_Parser
+namespace Parser
 {
+	/// <summary>
+	/// Модель приложения
+	/// </summary>
 
     public class HtmlTools: IHtmlTools
     {
 		readonly KnownFolder _folder = new KnownFolder(KnownFolderType.Downloads);
 
 		private string DefaultFolder => _folder.Path;
-		public string DefaultDirectory => DefaultFolder + "\\HtmlDocs";
+		private string _customFolder;
 
-		private string CustomFolder;
+
+		public string DefaultDirectory => DefaultFolder + "\\HtmlDocs";
 		public string CustomDirectory
 		{
-			get => CustomFolder;
+			get => _customFolder;
 
 			set
 			{
-				CustomFolder = value;
+				_customFolder = value;
 				if (File.Exists(value))
 				{
 					Directory.CreateDirectory(CustomDirectory);
@@ -36,14 +37,12 @@ namespace Model_Parser
 			} 
 		}
 
-        private string _htmlFilePath;
-        public string HtmlFilePath { get => _htmlFilePath; private set => _htmlFilePath = value; }
+		//Путь к последнему добавленному файлу
+		public string HtmlFilePath { get; private set; }
 
-       
 
-		public void DownloadHtml(string uri)
+        public void DownloadHtml(string uri)
 	    {
-		    
 		    var builder = new UriBuilder(uri);
 		    var localUri = builder.Uri;
 
@@ -65,9 +64,8 @@ namespace Model_Parser
 						HtmlFilePath = directory + $"\\({localUri.Host})({cloneId}).html";
 					}
 				}
+
 				client.DownloadFile(localUri, HtmlFilePath);
-				
-				
 			}
 	    }
 		public void DownloadHtml(string uri, string folderPath)
@@ -78,8 +76,7 @@ namespace Model_Parser
 			{
 				if (Directory.Exists(folderPath))
 				{
-					
-					CustomFolder = folderPath;
+					_customFolder = folderPath;
 					Directory.CreateDirectory(CustomDirectory);
                     HtmlFilePath = CustomDirectory + $"\\({localUri.Host}).html";
 
@@ -92,15 +89,23 @@ namespace Model_Parser
 			}
 		}
 
+		//Получает весь текст из файла
 		public string GetString()
 		{
 			var content = File.Exists(HtmlFilePath) ? File.ReadAllText(HtmlFilePath) : "File doesn't exist";
 			return content;
 		}
-
 		public string GetString(string filePath)
 		{
-			var content = File.Exists(filePath) ? File.ReadAllText(filePath) : "File doesn't exist";
+			long b = new FileInfo(filePath).Length;
+			long kb = b / 1024;
+			long mb = kb / 1024;
+			string content;
+			mb = mb == 0 ? 1 : mb;
+		
+			MemoryFailPoint f = new MemoryFailPoint((int)mb);
+
+			content = File.Exists(filePath) ? File.ReadAllText(filePath) : "File doesn't exist";
 			return content;
 		}
 
@@ -139,27 +144,37 @@ namespace Model_Parser
 
 	    public string[] SplitToWords(string text)
 	    {
-			//string[] patterns = {" ", ",", ".", "", ")", "(", "\"", ":", ";", "?", "]", "["};
-			var words = Regex.Split(text, "[ ,\\.!?:;\\]\\[\\)\\(\\n\\r\\t\"«»]+");
-
+		    text = text.ToLower();
+		    var words = Regex.Split(text, "[ ,\\.!?:;\\]\\[\\)\\(\\n\\r\\t\"«»]+");
 		    return words;
 	    }
 
-	    public int CountUpWord(string[] text, string word)
+	    public IEnumerable<CountedWords> CountUpWord(string[] words)
 	    {
-		    var matches = text.Where(x => x == word);
-		    return matches.Count();
-	    }
+		    string[] pattern = {"|", " ", "", "-", "", "=", "/"};
+		    words = words.Except(pattern).ToArray();
 
-	    private void DeleteDefaultDirectory()
-	    {
-			Directory.Delete(DefaultDirectory, true);
+		    var matches = words.Where(a => !String.IsNullOrEmpty(a)).GroupBy(x => x.Trim())
+			    .Select(g => new CountedWords(g.Key, g.Count()));
+			
+		    return matches;
 	    }
-	    private void DeleteCustomDirectory()
-	    {
-		    Directory.Delete(CustomDirectory, true);
-	    }
-
-
     }
+
+	/// <summary>
+	/// Объект:
+	/// Слово - количество
+	/// </summary>
+	public class CountedWords
+	{
+		public string Word;
+		public int Count;
+
+		public CountedWords(string word, int count)
+		{
+			Word = word;
+			Count = count;
+		}
+	}
+
 }

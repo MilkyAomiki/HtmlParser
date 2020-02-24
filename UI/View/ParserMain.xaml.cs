@@ -1,45 +1,42 @@
 ﻿using Microsoft.Win32;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.ComponentModel;
-using System.Net;
-using System.Threading;
+using Parser;
 
 namespace UI
 {
 	/// <summary>
-	/// Логика взаимодействия для Parser_Main.xaml
+	/// Логика взаимодействия для окна ParserMain.xaml
 	/// </summary>
-	public partial class Parser_Main : Window
+	public partial class ParserMain : Window
 	{
-        public Action<string> LoadHtmlClick;
-        public Func<string> OpenExtractPage;
-        public Func<string, string[]> SplitToWords;
-        public Func<string[], string, int> CountUpWord;
-        public Func<string, string> ShowTextFromHtml_Click;
+		#region Events
 
-        public string DefaultDirectory;
+		public Action<string> LoadHtmlClick;
+		public Func<string> OpenExtractPage;
+		public Func<string, string[]> SplitToWords;
+		public Func<string[], IEnumerable<CountedWords>> CountUpWord;
+		public Func<string, string> ShowTextFromHtml_Click;
+
+		#endregion
+
+		//Значения устанавливает App.cs
+		public string DefaultDirectory;
         public string CustomDirectory;
 
-        public Parser_Main()
+        public ParserMain()
 		{
 			InitializeComponent();
             item_load.IsSelected = true;
         }
 
  #region Load Page
+
         private void Btn_loadHtml_Click(object sender, RoutedEventArgs e)
         {
 	        string html = txtBx_html.Text;
@@ -64,9 +61,7 @@ namespace UI
 
 #endregion
 
-
  #region Extract Page
-
 
         private void Btn_extractVisibleText_Click(object sender, RoutedEventArgs e)
         {
@@ -106,10 +101,10 @@ namespace UI
         }
 
         private void Btn_goToStat_Click(object sender, RoutedEventArgs e)
-        {
+        { 
 	        string[] words = SplitToWords.Invoke(lbl_htmlVisibleText.Text);
-	        var wordsStat = words.Where(a => !String.IsNullOrEmpty(a)).GroupBy(x => x.Trim()).Select(g => new { Word = g.Key, Count = g.Count() })
-		        .OrderByDescending(f => f.Count);
+	        var wordsStat = CountUpWord.Invoke(words);
+	        wordsStat = wordsStat.OrderByDescending(g => g.Count);
 
 	        if (lbl_wordsStats.Content != null) lbl_wordsStats.Content = null;
             foreach (var item in wordsStat)
