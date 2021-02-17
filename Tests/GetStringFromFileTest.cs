@@ -1,18 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Parser;
+using System.IO;
 
-namespace UnitTest1
+namespace Tests
 {
 	[TestClass]
 	public class GetStringFromFileTest
 	{
-		HtmlTools tool = new HtmlTools();
+		readonly HtmlTools tool = new HtmlTools();
 
 		[TestMethod]
 		public void GetStringTest()
@@ -27,7 +22,7 @@ namespace UnitTest1
 			{
 				writer.Write(Expected);
 			}
-			Actual = tool.GetString(FilePath);
+			Actual = tool.GetText(FilePath);
 
 			//Assert
 			Assert.AreEqual(Expected, Actual);

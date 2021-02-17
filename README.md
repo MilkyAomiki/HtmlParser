@@ -2,7 +2,7 @@
 
 ##  Требования
 
-- [.NET Framework 4.7.2](https://dotnet.microsoft.com/download/dotnet-framework/net472)
+- [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 
 ## Сборка и запуск
 

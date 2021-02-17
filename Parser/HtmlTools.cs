@@ -1,28 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.MemoryMappedFiles;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using Syroot.Windows.IO;
 using System.Runtime;
 
 namespace Parser
 {
-	/// <summary>
-	/// Модель приложения
-	/// </summary>
-
-    public class HtmlTools: IHtmlTools
-    {
-		readonly KnownFolder _folder = new KnownFolder(KnownFolderType.Downloads);
-
-		private string DefaultFolder => _folder.Path;
+	public class HtmlTools : IHtmlTools
+	{
 		private string _customFolder;
 
-
-		public string DefaultDirectory => DefaultFolder + "\\HtmlDocs";
+		public string DefaultDirectory => @"\HtmlDocs";
 		public string CustomDirectory
 		{
 			get => _customFolder;
@@ -34,17 +24,17 @@ namespace Parser
 				{
 					Directory.CreateDirectory(CustomDirectory);
 				}
-			} 
+			}
 		}
 
 		//Путь к последнему добавленному файлу
 		public string HtmlFilePath { get; private set; }
 
 
-        public void DownloadHtml(string uri)
-	    {
-		    var builder = new UriBuilder(uri);
-		    var localUri = builder.Uri;
+		public void DownloadHtml(string uri)
+		{
+			var builder = new UriBuilder(uri);
+			var localUri = builder.Uri;
 
 			using (var client = new WebClient())
 			{
@@ -54,7 +44,7 @@ namespace Parser
 					Directory.CreateDirectory(DefaultDirectory);
 				}
 				HtmlFilePath = directory + $"\\({localUri.Host}).html";
-				    
+
 				if (File.Exists(HtmlFilePath))
 				{
 					int cloneId = 0;
@@ -67,7 +57,7 @@ namespace Parser
 
 				client.DownloadFile(localUri, HtmlFilePath);
 			}
-	    }
+		}
 		public void DownloadHtml(string uri, string folderPath)
 		{
 			var builder = new UriBuilder(uri);
@@ -78,7 +68,7 @@ namespace Parser
 				{
 					_customFolder = folderPath;
 					Directory.CreateDirectory(CustomDirectory);
-                    HtmlFilePath = CustomDirectory + $"\\({localUri.Host}).html";
+					HtmlFilePath = CustomDirectory + $"\\({localUri.Host}).html";
 
 					client.DownloadFile(localUri, HtmlFilePath);
 				}
@@ -90,12 +80,13 @@ namespace Parser
 		}
 
 		//Получает весь текст из файла
-		public string GetString()
+		public string GetText()
 		{
 			var content = File.Exists(HtmlFilePath) ? File.ReadAllText(HtmlFilePath) : "File doesn't exist";
 			return content;
 		}
-		public string GetString(string filePath)
+
+		public string GetText(string filePath)
 		{
 			long b = new FileInfo(filePath).Length;
 			long kb = b / 1024;
@@ -103,17 +94,17 @@ namespace Parser
 			string content;
 			mb = mb == 0 ? 1 : mb;
 
-			if (!File.Exists(filePath)) throw  new FileNotFoundException();
-			if (new FileInfo(filePath).Extension != ".html") throw new FileFormatException();
+			if (!File.Exists(filePath)) throw new FileNotFoundException();
+			if (new FileInfo(filePath).Extension != ".html") throw new FileLoadException();
 			try
 			{
 				MemoryFailPoint f = new MemoryFailPoint((int)mb);
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				throw new InsufficientMemoryException();
 			}
-			
+
 			content = File.ReadAllText(filePath);
 			return content;
 		}
@@ -123,24 +114,24 @@ namespace Parser
 
 			string visibleText = null;
 
-			var withoutTitle   = Regex.Replace(html, @"<title[\W\w\S\s]*?>[\W\w\S\s]*?</title>", " ");
+			var withoutTitle = Regex.Replace(html, @"<title[\W\w\S\s]*?>[\W\w\S\s]*?</title>", " ");
 			var withoutScripts = Regex.Replace(withoutTitle, @"<script[\W\w\S\s]*?>[\W\w\S\s]*?</script>", " ");
-            var withoutStyles  = Regex.Replace(withoutScripts, @"<style[\W\w\S\s]*?>[\W\w\S\s]*?</style>", " ");
-            var withoutTags    = Regex.Replace(withoutStyles, @"<[\W\w\S\s]*?>", " ");
+			var withoutStyles = Regex.Replace(withoutScripts, @"<style[\W\w\S\s]*?>[\W\w\S\s]*?</style>", " ");
+			var withoutTags = Regex.Replace(withoutStyles, @"<[\W\w\S\s]*?>", " ");
 			var withoutSymbols = Regex.Replace(withoutTags, @"&[\W\w\S]*?;", " ");
 			var withoutNewLine = Regex.Replace(withoutSymbols, @"\n", " ");
 
 			for (int i = 0; i < withoutNewLine.Length; i++)
 			{
-				if (i+1 >= withoutNewLine.Length)
+				if (i + 1 >= withoutNewLine.Length)
 				{
-					if (!Char.IsWhiteSpace(withoutNewLine[i]))
+					if (!char.IsWhiteSpace(withoutNewLine[i]))
 					{
 						visibleText += withoutNewLine[i];
 					}
 					break;
 				}
-				if (Char.IsWhiteSpace(withoutNewLine[i + 1]) && Char.IsWhiteSpace(withoutNewLine[i]))
+				if (char.IsWhiteSpace(withoutNewLine[i + 1]) && Char.IsWhiteSpace(withoutNewLine[i]))
 				{
 					continue;
 				}
@@ -151,22 +142,22 @@ namespace Parser
 			return visibleText;
 		}
 
-	    public string[] SplitToWords(string text)
-	    {
-		    text = text.ToLower();
-		    var words = Regex.Split(text, "[ ,\\.!?:;\\]\\[\\)\\(\\n\\r\\t\"«»]+");
-		    return words;
-	    }
+		public string[] SplitToWords(string text)
+		{
+			text = text.ToLower();
+			var words = Regex.Split(text, "[ ,\\.!?:;\\]\\[\\)\\(\\n\\r\\t\"«»]+");
+			return words;
+		}
 
-	    public IEnumerable<CountedWords> CountUpWord(string[] words)
-	    {
+		public IEnumerable<CountedWords> CountUpWords(string[] words)
+		{
+			var matches = words.Where(a => !string.IsNullOrEmpty(a))
+				.GroupBy(x => x)
+				.Select(g => new CountedWords(g.Key, g.Count()));
 
-		    var matches = words.Where(a => !String.IsNullOrEmpty(a)).GroupBy(x => x)
-			    .Select(g => new CountedWords(g.Key, g.Count()));
-			
-		    return matches;
-	    }
-    }
+			return matches;
+		}
+	}
 
 	/// <summary>
 	/// Объект:

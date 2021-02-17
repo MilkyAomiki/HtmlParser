@@ -1,14 +1,13 @@
-﻿using System;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Parser;
+using System.IO;
 
-namespace UnitTest1
+namespace Tests
 {
 	[TestClass]
 	public class DownloadUnitTest
 	{
-		HtmlTools tools = new HtmlTools();
+		readonly HtmlTools tools = new HtmlTools();
 
 		[TestMethod]
 		public void DownloadToCustomFolder()
@@ -30,6 +29,7 @@ namespace UnitTest1
 				Assert.Fail("Custom directory is empty");
 			}
 		}
+
 		[TestMethod]
 		public void DownloadToDefaultFolder()
 		{

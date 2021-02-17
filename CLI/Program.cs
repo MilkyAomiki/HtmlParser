@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using  Model_Parser;
+﻿using Parser;
+using System;
 
-namespace TestUi
+namespace CLI
 {
 	class Program
 	{
@@ -17,12 +13,12 @@ namespace TestUi
 			string uri = Console.ReadLine();
 
 			tools.DownloadHtml(uri);
-			var str = tools.GetString();
+			var str = tools.GetText();
 			bool IsRead;
 			Console.WriteLine("Parse File?");
 			var input = Console.ReadLine();
 			string visibleText = null;
-			IsRead = (input == "yes"||input == "ok" )? true : false;
+			IsRead = input == "yes"||input == "ok" ;
 			if (IsRead)
 			{
 				visibleText = tools.GetVisibleText(str);
@@ -31,7 +27,7 @@ namespace TestUi
 			Console.WriteLine("Split To Words?");
 			var input2 = Console.ReadLine();
 
-			IsRead = (input2 == "yes" || input2 == "ok") ? true : false;
+			IsRead = input2 == "yes" || input2 == "ok";
 			string[] words;
 			if (IsRead)
 			{
