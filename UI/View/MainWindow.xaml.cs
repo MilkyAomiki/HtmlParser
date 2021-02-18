@@ -69,7 +69,7 @@ namespace UI
 					}
 					catch (Exception)
 					{
-						MessageBox.Show("Can not access directory", txtBx_Path.Text, MessageBoxButton.OK);
+						MessageBox.Show("Cannot access directory", txtBx_Path.Text, MessageBoxButton.OK);
 						return;
 					}
 
@@ -84,10 +84,8 @@ namespace UI
 			}
 			else if (txtBx_Path.Text == DefaultFolder && CustomFolder!= null)
 			{
-
 				CustomFolder = null;
 				File.Delete("settings.json");
-
 			}
 			tabItem_main.IsSelected = true;
 		}

@@ -11,8 +11,15 @@ namespace Parser
 	public class HtmlTools : IHtmlTools
 	{
 		private string _customFolder;
+		private readonly string _defaultDirectory = "HtmlDocs";
 
-		public string DefaultDirectory => @"\HtmlDocs";
+		public string DefaultDirectory => Path.GetFullPath(_defaultDirectory);
+
+		/// <summary>
+		/// Путь к последнему добавленному файлу
+		/// </summary>
+		public string HtmlFilePath { get; private set; }
+
 		public string CustomDirectory
 		{
 			get => _customFolder;
@@ -27,59 +34,33 @@ namespace Parser
 			}
 		}
 
-		//Путь к последнему добавленному файлу
-		public string HtmlFilePath { get; private set; }
-
-
 		public void DownloadHtml(string uri)
 		{
 			var builder = new UriBuilder(uri);
 			var localUri = builder.Uri;
 
+			PrepareDirectory(localUri.Host);
 			using (var client = new WebClient())
 			{
-				var directory = Directory.Exists(CustomDirectory) ? CustomDirectory : DefaultDirectory;
-				if (directory == DefaultDirectory)
-				{
-					Directory.CreateDirectory(DefaultDirectory);
-				}
-				HtmlFilePath = directory + $"\\({localUri.Host}).html";
-
-				if (File.Exists(HtmlFilePath))
-				{
-					int cloneId = 0;
-					while (File.Exists(HtmlFilePath))
-					{
-						cloneId++;
-						HtmlFilePath = directory + $"\\({localUri.Host})({cloneId}).html";
-					}
-				}
-
 				client.DownloadFile(localUri, HtmlFilePath);
 			}
 		}
+
 		public void DownloadHtml(string uri, string folderPath)
 		{
 			var builder = new UriBuilder(uri);
 			var localUri = builder.Uri;
+
+			PrepareDirectory(localUri.Host, folderPath);
 			using (var client = new WebClient())
 			{
-				if (Directory.Exists(folderPath))
-				{
-					_customFolder = folderPath;
-					Directory.CreateDirectory(CustomDirectory);
-					HtmlFilePath = CustomDirectory + $"\\({localUri.Host}).html";
-
-					client.DownloadFile(localUri, HtmlFilePath);
-				}
-				else
-				{
-					throw new DirectoryNotFoundException();
-				}
+				client.DownloadFile(localUri, HtmlFilePath);
 			}
 		}
 
-		//Получает весь текст из файла
+		/// <summary>
+		/// Получает весь текст из файла
+		/// </summary>
 		public string GetText()
 		{
 			var content = File.Exists(HtmlFilePath) ? File.ReadAllText(HtmlFilePath) : "File doesn't exist";
@@ -111,7 +92,6 @@ namespace Parser
 
 		public string GetVisibleText(string html)
 		{
-
 			string visibleText = null;
 
 			var withoutTitle = Regex.Replace(html, @"<title[\W\w\S\s]*?>[\W\w\S\s]*?</title>", " ");
@@ -131,7 +111,7 @@ namespace Parser
 					}
 					break;
 				}
-				if (char.IsWhiteSpace(withoutNewLine[i + 1]) && Char.IsWhiteSpace(withoutNewLine[i]))
+				if (char.IsWhiteSpace(withoutNewLine[i + 1]) && char.IsWhiteSpace(withoutNewLine[i]))
 				{
 					continue;
 				}
@@ -149,30 +129,48 @@ namespace Parser
 			return words;
 		}
 
-		public IEnumerable<CountedWords> CountUpWords(string[] words)
+		public IDictionary<string, int> CountUpWords(string[] words)
 		{
 			var matches = words.Where(a => !string.IsNullOrEmpty(a))
 				.GroupBy(x => x)
-				.Select(g => new CountedWords(g.Key, g.Count()));
+				.ToDictionary(g => g.Key, g => g.Count());
 
 			return matches;
 		}
-	}
 
-	/// <summary>
-	/// Объект:
-	/// Слово - количество
-	/// </summary>
-	public class CountedWords
-	{
-		public string Word;
-		public int Count;
-
-		public CountedWords(string word, int count)
+		private void PrepareDirectory(string fileName, string directoryPath)
 		{
-			Word = word;
-			Count = count;
+			if (Directory.Exists(directoryPath))
+			{
+				_customFolder = directoryPath;
+				Directory.CreateDirectory(CustomDirectory);
+				HtmlFilePath = CustomDirectory + $"\\({directoryPath}).html";
+			}
+			else
+			{
+				throw new DirectoryNotFoundException();
+			}
+		}
+
+		private void PrepareDirectory(string fileName)
+		{
+			var directory = Directory.Exists(CustomDirectory) ? CustomDirectory : DefaultDirectory;
+			if (directory == DefaultDirectory)
+			{
+				Directory.CreateDirectory(DefaultDirectory);
+			}
+
+			HtmlFilePath = directory + $"\\({fileName}).html";
+
+			if (File.Exists(HtmlFilePath))
+			{
+				int cloneId = 0;
+				while (File.Exists(HtmlFilePath))
+				{
+					cloneId++;
+					HtmlFilePath = directory + $"\\({fileName})({cloneId}).html";
+				}
+			}
 		}
 	}
-
 }

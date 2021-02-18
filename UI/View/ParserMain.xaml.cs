@@ -1,12 +1,11 @@
 ﻿using Microsoft.Win32;
+using Parser;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.ComponentModel;
-using Parser;
 
 namespace UI
 {
@@ -20,7 +19,7 @@ namespace UI
 		public Action<string> LoadHtmlClick;
 		public Func<string> OpenExtractPage;
 		public Func<string, string[]> SplitToWords;
-		public Func<string[], IEnumerable<CountedWords>> CountUpWord;
+		public Func<string[], IDictionary<string, int>> CountUpWord;
 		public Func<string, string> ShowTextFromHtml_Click;
 
 		#endregion
@@ -104,12 +103,12 @@ namespace UI
 		{
 			string[] words = SplitToWords.Invoke(lbl_htmlVisibleText.Text);
 			var wordsStat = CountUpWord.Invoke(words);
-			wordsStat = wordsStat.OrderByDescending(g => g.Count);
+			wordsStat = wordsStat.OrderByDescending(g => g.Value).ToDictionary(k=> k.Key, k=>k.Value);
 
 			if (lbl_wordsStats.Content != null) lbl_wordsStats.Content = null;
 			foreach (var item in wordsStat)
 			{
-				lbl_wordsStats.Content += $"{item.Word} - {item.Count} \n";
+				lbl_wordsStats.Content += $"{item.Key} - {item.Value} \n";
 			}
 			item_statistic.IsSelected = true;
 		}

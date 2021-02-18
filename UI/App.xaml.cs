@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Parser;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
-using Parser;
-using Newtonsoft.Json;
 
 namespace UI
 {
@@ -19,9 +19,11 @@ namespace UI
 		public App()
 		{
 			DeserializeSettings();
+			LinkViewEvents();
+		}
 
-			#region View Events
-
+		private void LinkViewEvents()
+		{
 			w_main.SetCustomFolder += SetCustomFolder;
 			w_main.GetCustomFolder += () => htmlTools.CustomDirectory;
 			w_main.GetDefaultFolder += () => htmlTools.DefaultDirectory;
@@ -36,9 +38,6 @@ namespace UI
 			w_parser.ShowTextFromHtml_Click += ShowTextFromHtml;
 			w_parser.SplitToWords += SplitToWords;
 			w_parser.CountUpWord += CountUpWords;
-
-
-			#endregion
 		}
 
 		private void DeserializeSettings()
@@ -109,7 +108,6 @@ namespace UI
 			catch (FileNotFoundException)
 			{
 				visibleText = "File not found";
-
 			}
 
 			return visibleText;
@@ -120,7 +118,7 @@ namespace UI
 			return htmlTools.SplitToWords(text);
 		}
 
-		private IEnumerable<CountedWords> CountUpWords(string[] words)
+		private IDictionary<string, int> CountUpWords(string[] words)
 		{
 			return htmlTools.CountUpWords(words);
 		}
