@@ -1,4 +1,5 @@
-﻿using Microsoft.Win32;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Win32;
 using Parser;
 using System;
 using System.Collections.Generic;
@@ -27,11 +28,13 @@ namespace UI
 		//Значения устанавливает App.cs
 		public string DefaultDirectory;
 		public string CustomDirectory;
+		private readonly ILogger logger;
 
-		public ParserMain()
+		public ParserMain(ILogger logger)
 		{
 			InitializeComponent();
 			item_load.IsSelected = true;
+			this.logger = logger;
 		}
 
 		#region Load Page

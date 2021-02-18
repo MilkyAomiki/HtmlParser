@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Parser;
 using System;
 using System.Collections.Generic;
@@ -12,14 +13,34 @@ namespace UI
 	/// </summary>
 	public partial class App : Application
 	{
-		private readonly MainWindow w_main = new MainWindow();
-		private readonly ParserMain w_parser = new ParserMain();
+		private readonly ILogger logger;
+
+		private readonly MainWindow w_main;
+		private readonly ParserMain w_parser;
 		private readonly IHtmlTools htmlTools = new HtmlTools();
 
 		public App()
 		{
+			logger = GetLogger<App>();
+
+			w_main = new MainWindow(logger);
+			w_parser = new ParserMain(logger);
+			
 			DeserializeSettings();
 			LinkViewEvents();
+		}
+
+		public static ILogger<T> GetLogger<T>()
+		{
+			using var loggerFactory = LoggerFactory.Create(builder =>
+			{
+				builder.AddFilter("Microsoft", LogLevel.Warning)
+				.AddFilter("System", LogLevel.Warning)
+				.AddConsole();
+			});
+
+			ILogger<T> logger = loggerFactory.CreateLogger<T>();
+			return logger;
 		}
 
 		private void LinkViewEvents()
@@ -74,11 +95,13 @@ namespace UI
 		{
 			try
 			{
+				logger.LogInformation($"Downloading html {html}...");
 				htmlTools.DownloadHtml(html);
+				logger.LogInformation("Done.");
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine(e);
+				logger.LogError($"Exception on downloading:\n {e.Message}\n");
 			}
 
 		}
@@ -93,21 +116,28 @@ namespace UI
 			string visibleText;
 			try
 			{
+				logger.LogInformation($"Extracting content from {path}...");
 				string html = htmlTools.GetText(path);
+				logger.LogInformation("Done.");
+				logger.LogInformation("Extracting visible text...");
 				visibleText = htmlTools.GetVisibleText(html);
+				logger.LogInformation("Done.");
 
 			}
 			catch (FileFormatException)
 			{
 				visibleText = "Wrong file extension";
+				logger.LogError(visibleText);
 			}
 			catch (InsufficientMemoryException)
 			{
 				visibleText = "File is too large";
+				logger.LogError(visibleText);
 			}
 			catch (FileNotFoundException)
 			{
 				visibleText = "File not found";
+				logger.LogError(visibleText);
 			}
 
 			return visibleText;
@@ -115,12 +145,18 @@ namespace UI
 
 		private string[] SplitToWords(string text)
 		{
-			return htmlTools.SplitToWords(text);
+			logger.LogInformation("Splitting to words...");
+			string[] words = htmlTools.SplitToWords(text);
+			logger.LogInformation($"Done. Words count:{words.Length}.");
+			return words;
 		}
 
 		private IDictionary<string, int> CountUpWords(string[] words)
 		{
-			return htmlTools.CountUpWords(words);
+			logger.LogInformation("Counting words...");
+			IDictionary<string, int> wordsCount = htmlTools.CountUpWords(words);
+			logger.LogInformation("Done.");
+			return wordsCount;
 		}
 	}
 }

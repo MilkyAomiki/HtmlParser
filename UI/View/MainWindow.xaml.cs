@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.AccessControl;
 using System.Windows;
 using System.Windows.Forms;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using MessageBox = System.Windows.MessageBox;
 
@@ -25,10 +26,12 @@ namespace UI
 		//Значения устанавливаются из App.cs
 		private string CustomFolder { set => SetCustomFolder.Invoke(value); get => GetCustomFolder.Invoke(); }
 		private string DefaultFolder => GetDefaultFolder.Invoke();
+		private readonly ILogger logger;
 
-		public MainWindow()
+		public MainWindow(ILogger logger)
 		{
 			InitializeComponent();
+			this.logger = logger;
 		}
 
 		private void Btn_settings_Click(object sender, RoutedEventArgs e)
