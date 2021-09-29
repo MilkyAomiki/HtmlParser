@@ -10,9 +10,9 @@
 
   ​   Из корневой директории, 
 
-  ​     `dotnet run -p CLI`  - для запуска CLI версии
+  ​     `dotnet run -p src/CLI`  - для запуска CLI версии
 
-  ​     `dotnet run -p UI` - для запуска Windows - UI версии 
+  ​     `dotnet run -p src/UI` - для запуска Windows - UI версии 
 
 - Через **Visual Studio**, убедиться что UI/CLI назначен стартовым проектом и нажать кнопку запуск.
 
