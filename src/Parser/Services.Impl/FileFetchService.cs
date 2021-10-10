@@ -20,7 +20,7 @@ namespace HtmlAnalyzer.Parser.Services.Impl
 			if (Uri.TryCreate(filename, UriKind.RelativeOrAbsolute, out var uri))
 				return !uri.IsAbsoluteUri || uri.IsFile ? localFileService.Fetch(filename) : webFileService.Fetch(filename);
 
-			throw new ParserException($"Given URI could not be recognized: {uri}");
+			throw new ParserException($"Given URI could not be recognized: {filename}");
 		}
 	}
 }
