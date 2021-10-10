@@ -1,37 +1,22 @@
-﻿using Microsoft.Extensions.Logging;
-using Parser;
-using System;
+﻿using System.CommandLine;
+using System.CommandLine.Invocation;
 
-namespace CLI
+namespace HtmlAnalyzer.CLI
 {
-	class Program
+	public class Program
 	{
-		static void Main(string[] args)
+		public static void Main(string[] args)
 		{
-			HtmlTools htmlTools = new HtmlTools();
-			ILogger logger = GetLogger<Program>();
-
-			HtmlAnalyzer htmlAnalyzer = new HtmlAnalyzer(htmlTools, logger, () => Exit(logger));
-			htmlAnalyzer.Run();
-		}
-
-		private static void Exit(ILogger logger)
-		{
-			logger.LogInformation("Exiting...");
-			Environment.Exit(Environment.ExitCode);
-		}
-
-		public static ILogger<T> GetLogger<T>()
-		{
-			using var loggerFactory = LoggerFactory.Create(builder =>
+			var cmd = new RootCommand
 			{
-				builder.AddFilter("Microsoft", LogLevel.Warning)
-				.AddFilter("System", LogLevel.Warning)
-				.AddConsole();
-			});
+				new Argument<string>("filename", "URI of the file to analyze.\nRelative paths are supported only for the file system."),
+				new Option<bool>(new string[] { "--verbose", "-v" }, "Output logs"),
+				new Option<bool>(new string[] { "--log-to-file", "-l"}, "Write logs to a file of the format 'logs/html-parser-yyyymmddhhmmss'")
+			};
 
-			ILogger<T> logger = loggerFactory.CreateLogger<T>();
-			return logger;
+			cmd.Handler = CommandHandler.Create<string, bool, bool>(new Startup().Start);
+
+			cmd.Invoke(args);
 		}
 	}
 }
