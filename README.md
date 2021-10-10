@@ -16,7 +16,7 @@
 
 `dotnet run -p src/CLI -- --help` - получить помощь по использованию.
 
-`dotnet run -p src/CLI -- path/to/the/file` или `dotnet run -p src/CLI -- /path/to/the/file` - чтобы анализировать файл из локальной файловой системы.
+`dotnet run -p src/CLI -- path/to/the/file` или `dotnet run -p src/CLI -- /path/to/the/file` - анализировать файл из локальной файловой системы.
 
 `dotnet run -p src/CLI -- http://www.example.com` - получить и анализировать файл из интернета.
 
